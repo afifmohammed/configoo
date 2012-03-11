@@ -8,11 +8,11 @@ namespace Configoo
     public class Configured
     {
         private static Configured _value;
-        internal static Func<Configured> Factory { get; set; }
+        internal static Func<Configured> Instance { get; set; }
         
         public static Configured Value
         {
-            get { return _value ?? (_value = Factory()); }
+            get { return _value ?? (_value = Instance()); }
         }
 
         private readonly Lazy<IDictionary<string, object>> _values;

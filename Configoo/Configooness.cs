@@ -21,7 +21,7 @@ namespace Configoo
                     return values;
                 }).InSingletonScope();
 
-            Configured.Factory = () => Kernel.Get<Configured>();
+            Configured.Instance = () => Kernel.Get<Configured>();
         }
 
         private static IEnumerable<KeyValuePair<string, object>> AppSettings
