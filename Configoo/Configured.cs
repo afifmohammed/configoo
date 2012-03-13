@@ -29,9 +29,9 @@ namespace Configoo
             return GetValue(key, @default).ToString();
         }
 
-        public TValue For<TValue>(string key, TValue @default = default(TValue)) where TValue : class
+        public TValue For<TValue>(string key, TValue @default = default(TValue))
         {
-            return GetValue(key, @default) as TValue;
+            return (TValue)GetValue(key, @default);
         }
 
         public object For<TClass>(Expression<Func<TClass, object>> propertyAccessor, object @default = null)

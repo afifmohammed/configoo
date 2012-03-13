@@ -22,6 +22,7 @@ namespace Configoo
                 }).InSingletonScope();
 
             Configured.Instance = () => Kernel.Get<Configured>();
+            Kernel.Settings.InjectNonPublic = true;
         }
 
         private static IEnumerable<KeyValuePair<string, object>> AppSettings
