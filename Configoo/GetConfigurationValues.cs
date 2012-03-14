@@ -9,7 +9,7 @@ namespace Configoo
         IDictionary<string, object> List { get; }
     }
 
-    internal class GetConfigurationValues : IGetConfigurationValues
+    public class GetConfigurationValues : IGetConfigurationValues
     {
         public IDictionary<string, object> List
         {
