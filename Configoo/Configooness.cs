@@ -12,7 +12,7 @@ namespace Configoo
         public Configooness() : this(s => { })
         {}
 
-        public Configooness(params Action<AssemblyScanner>[] customActions)
+        internal Configooness(params Action<AssemblyScanner>[] customActions)
         {
             _customActions = customActions;
         }
