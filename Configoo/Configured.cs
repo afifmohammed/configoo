@@ -8,7 +8,7 @@ namespace Configoo
 {
     public class Configured
     {
-        private static Configured _value;
+        internal static Configured _value;
         internal static Func<Configured> Instance { get; set; }
         
         public static Configured Value
@@ -18,11 +18,16 @@ namespace Configoo
 
         private readonly Lazy<IDictionary<string, object>> _values;
 
-        [Inject] private IGetConfigurationValues ConfigurationValues { get; set; }
+        [Inject] private IGetConfigurationValues Values { get; set; }
 
         public Configured()
         {
-            _values = new Lazy<IDictionary<string, object>>(() => ConfigurationValues.List);
+            _values = new Lazy<IDictionary<string, object>>(() => Values.List);
+        }
+
+        static Configured()
+        {
+            Instance = () => { throw new InvalidOperationException("Oops! You need to load Configooness in your ninject kernel."); };
         }
 
         public string For(string key, string @default = null)
@@ -50,6 +55,9 @@ namespace Configoo
         private object GetValue(string key, object @default = null)
         {
             var values = _values.Value;
+            
+            key = key.Trim().ToLower();
+
             if (!values.ContainsKey(key) && @default != null)
                 values.Add(key, @default);
 

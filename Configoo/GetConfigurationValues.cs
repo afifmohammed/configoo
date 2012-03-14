@@ -16,7 +16,7 @@ namespace Configoo
             get
             {
                 var values = new Dictionary<string, object>();
-                AppSettings.ForEach(x => values.Add(x.Key, x.Value));
+                AppSettings.ForEach(x => values.Add(x.Key.Trim().ToLower(), x.Value));
                 ConnectionStrings.ForEach(x => values.Add(x.Key, x.Value));
                 return values;
             }
@@ -28,7 +28,7 @@ namespace Configoo
             {
                 var valueCollection = new Dictionary<string, object>();
                 var appSettingsKeyValuePairs = ConfigurationManager.AppSettings;
-                appSettingsKeyValuePairs.AllKeys.ForEach(k => valueCollection.Add(k, appSettingsKeyValuePairs[k]));
+                appSettingsKeyValuePairs.AllKeys.ForEach(k => valueCollection.Add(k.Trim().ToLower(), appSettingsKeyValuePairs[k]));
                 return valueCollection;
             }
         }
@@ -40,7 +40,7 @@ namespace Configoo
                 var connectionStrings = ConfigurationManager.ConnectionStrings ?? new ConnectionStringSettingsCollection();
 
                 return connectionStrings.Cast<ConnectionStringSettings>()
-                    .ToDictionary<ConnectionStringSettings, string, object>(connectionString => connectionString.Name, connectionString => connectionString);
+                    .ToDictionary<ConnectionStringSettings, string, object>(connectionString => connectionString.Name.Trim().ToLower(), connectionString => connectionString);
             }
         }
     }

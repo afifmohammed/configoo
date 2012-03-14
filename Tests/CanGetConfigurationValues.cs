@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Configoo;
 using NUnit.Framework;
 using Ninject;
@@ -8,6 +9,12 @@ namespace Tests
     [TestFixture]
     public class CanGetConfigurationValues
     {
+        [TearDown]
+        public void Clear()
+        {
+            Configured._value = null;
+        }
+
         [Test]
         public void WhenDefaultStringValueProvidedForMissingKey()
         {
@@ -28,10 +35,10 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                age = Configured.Value.For("age", @default: 22);
+                age = Configured.Value.For("Age", @default: 31);
             }
-
-            Assert.AreEqual(22, age);
+            
+            Assert.AreEqual(31, age);
         }
 
         [Test]
@@ -85,6 +92,12 @@ namespace Tests
                 k.Load<Configooness>();
                 Assert.Throws<KeyNotFoundException>(() => Configured.Value.For("name"));
             }
+        }
+
+        [Test]
+        public void ShouldThrowWhenModuleNotLoadedInKernel()
+        {
+            Assert.Throws<InvalidOperationException>(() => { var v = Configured.Value; });
         }
 
         private class Person { public int Age { get; set; } }
