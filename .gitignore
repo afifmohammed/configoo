@@ -2,7 +2,6 @@
 _Resharper.*
 bin/
 obj/
-packages/
 *Resharper*
 *.suo
 *.nupkg

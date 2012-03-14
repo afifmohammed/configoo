@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Ninject;
 
@@ -17,11 +18,11 @@ namespace Configoo
 
         private readonly Lazy<IDictionary<string, object>> _values;
 
-        [Inject] private GetConfigurationValues ConfigurationValues { get; set; }
+        [Inject] private IGetConfigurationValues ConfigurationValues { get; set; }
 
         public Configured()
         {
-            _values = new Lazy<IDictionary<string, object>>(() => ConfigurationValues());
+            _values = new Lazy<IDictionary<string, object>>(() => ConfigurationValues.List);
         }
 
         public string For(string key, string @default = null)
@@ -40,7 +41,13 @@ namespace Configoo
             return GetValue(key, @default);
         }
 
-        private object GetValue(string key, object @default)
+        public TValue For<TValue>(Func<string, bool> keySelector)
+        {
+            var key = _values.Value.Keys.SingleOrDefault(keySelector);
+            return string.IsNullOrEmpty(key) ? default(TValue) : (TValue)GetValue(key);
+        }
+
+        private object GetValue(string key, object @default = null)
         {
             var values = _values.Value;
             if (!values.ContainsKey(key) && @default != null)

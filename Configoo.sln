@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configoo", "Configoo\Configoo.csproj", "{1CA8768D-40A8-4DAF-82E5-12E174AE7D3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{069CE6B4-63C7-48D8-A70D-9CFB716CCA40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{1CA8768D-40A8-4DAF-82E5-12E174AE7D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA8768D-40A8-4DAF-82E5-12E174AE7D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA8768D-40A8-4DAF-82E5-12E174AE7D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{069CE6B4-63C7-48D8-A70D-9CFB716CCA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{069CE6B4-63C7-48D8-A70D-9CFB716CCA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{069CE6B4-63C7-48D8-A70D-9CFB716CCA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{069CE6B4-63C7-48D8-A70D-9CFB716CCA40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
