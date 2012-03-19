@@ -59,7 +59,7 @@ namespace Configoo
         public TValue For<TValue>(string key, TValue @default = default(TValue))
         {
             var thedefault = default(TValue);
-            if (!_values.Keys.Contains(key) && (@default == null || @default.Equals(thedefault))) 
+            if (!_values.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase)) && (@default == null || @default.Equals(thedefault))) 
                 throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
 
             return _values.Get(key, @default);

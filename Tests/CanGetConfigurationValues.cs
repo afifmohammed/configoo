@@ -148,6 +148,21 @@ namespace Tests
             Assert.Throws<InvalidOperationException>(() => { var v = A<Configured>.Value; });
         }
 
+        [Test]
+        public void ShouldResolveClassByName()
+        {
+            Person person;
+            var john = new Person { Age = 25 };
+            using (var k = new StandardKernel())
+            {
+                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                A<Configured>.Value.For(john);
+                person = A<Configured>.Value.For<Person>();
+            }
+
+            Assert.IsNotNull(person);
+            Assert.AreEqual(john.Age, person.Age);
+        }
         private class Person { public int Age { get; set; } }
     }
 }
