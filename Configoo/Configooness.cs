@@ -19,8 +19,8 @@ namespace Configoo
 
         public override void Load()
         {
-            Bind<Configured>().ToSelf().InSingletonScope();
-            
+            Resolver.Get = t => Kernel.Get(t);
+
             Kernel.Scan(scanner =>
                             {
                                 var path = AppDomain.CurrentDomain.ExecutingAssmeblyPath();
@@ -32,7 +32,17 @@ namespace Configoo
                                 _customActions.ForEach(a => a(scanner));
                             });
 
-            Configured.Instance = () => Kernel.Get<Configured>();
+            Kernel.Scan(scanner =>
+            {
+                var path = AppDomain.CurrentDomain.ExecutingAssmeblyPath();
+                scanner.FromAssembliesInPath(path);
+                scanner.WhereTypeInheritsFrom<Configured>();
+                scanner.Where(t => !t.IsAbstract && !t.IsInterface && t.IsClass);
+                scanner.BindWithDefaultConventions();
+                scanner.InSingletonScope();
+                _customActions.ForEach(a => a(scanner));
+            });
+
             Kernel.Settings.InjectNonPublic = true;
         }
     }

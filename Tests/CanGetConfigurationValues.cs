@@ -8,19 +8,46 @@ namespace Tests
 {
     public class TestConfigurationValues : IGetConfigurationValues
     {
-        public IDictionary<string, object> List
+        private readonly IDictionary<string, object> _values;
+        public TestConfigurationValues()
         {
-            get { return new Dictionary<string, object>() { { "state", "VIC" } }; }
+            _values = new Dictionary<string, object> {{"state", "VIC"}};
         }
+        public IEnumerable<string> Keys
+        {
+            get { return _values.Keys; }
+        }
+
+        public TValue Get<TValue>(string key, TValue @default)
+        {
+            var lowered = key.Trim().ToLower();
+            if(!_values.ContainsKey(lowered))
+                _values.Add(lowered, @default);
+
+            return (TValue)_values[lowered];
+        }
+    }
+    
+    public class TestConfigured : Configured
+    {
+        private TestConfigured() : base(new TestConfigurationValues())
+        {}
     }
 
     [TestFixture]
     public class CanGetConfigurationValues
     {
-        [TearDown]
-        public void Clear()
+        [Test]
+        public void WhenCustomConfigurationIsLoaded()
         {
-            Configured._value = null;
+            string state;
+            using (var k = new StandardKernel())
+            {
+                k.Load<Configooness>();
+                state = A<TestConfigured>.Value.For("state");
+            }
+
+            Assert.AreEqual("VIC", state);
         }
 
         [Test]
@@ -30,7 +57,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                state = Configured.Value.For("state");
+                state = A<Configured>.Value.For("state");
             }
 
             Assert.AreEqual("VIC", state);
@@ -43,7 +70,7 @@ namespace Tests
             using(var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                name = Configured.Value.For("name", @default: "jack");
+                name = A<Configured>.Value.For("name", @default: "jack");
             }
 
             Assert.AreEqual("jack", name);
@@ -56,7 +83,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                age = Configured.Value.For("Age", @default: 31);
+                age = A<Configured>.Value.For("Age", @default: 31);
             }
             
             Assert.AreEqual(31, age);
@@ -69,7 +96,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                age = (int)Configured.Value.For<Person>(x => x.Age, @default: 22);
+                age = A<Configured>.Value.For<Person, int>(x => x.Age, @default: 22);
             }
 
             Assert.AreEqual(22, age);
@@ -83,7 +110,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                person = Configured.Value.For("John", @default);
+                person = A<Configured>.Value.For("John", @default);
             }
 
             Assert.AreEqual(@default.Age, person.Age);
@@ -96,9 +123,9 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                Configured.Value.For("weight", @default: 49);
+                A<Configured>.Value.For("weight", @default: 49);
 
-                weight = Configured.Value.For<int>(x => x == "weight");
+                weight = A<Configured>.Value.For<int>(x => x == "weight");
             }
 
             Assert.AreEqual(49, weight);
@@ -111,14 +138,14 @@ namespace Tests
             using(var k = new StandardKernel())
             {
                 k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
-                Assert.Throws<KeyNotFoundException>(() => Configured.Value.For("name"));
+                Assert.Throws<KeyNotFoundException>(() => A<Configured>.Value.For("name"));
             }
         }
 
         [Test]
         public void ShouldThrowWhenModuleNotLoadedInKernel()
         {
-            Assert.Throws<InvalidOperationException>(() => { var v = Configured.Value; });
+            Assert.Throws<InvalidOperationException>(() => { var v = A<Configured>.Value; });
         }
 
         private class Person { public int Age { get; set; } }

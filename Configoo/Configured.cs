@@ -2,66 +2,67 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Ninject;
 
 namespace Configoo
 {
+    public static class A<TConfigured> where TConfigured : Configured
+    {
+        public static TConfigured Value { 
+            get 
+            { 
+                var resolver = Resolver.Get;
+                if(resolver == null)
+                    throw new InvalidOperationException(
+                        string.Format("{0} could not be resolved. Did you forget to Load Configooness in your Ninject Kenrnel.", typeof(TConfigured)));
+
+                return resolver(typeof (TConfigured)) as TConfigured;
+            } 
+        }
+    }
+
     public class Configured
     {
-        internal static Configured _value;
-        internal static Func<Configured> Instance { get; set; }
-        
-        public static Configured Value
+        private readonly IGetConfigurationValues _values;
+
+        private Configured() {}
+
+        protected Configured(IGetConfigurationValues values)
         {
-            get { return _value ?? (_value = Instance()); }
-        }
-
-        private readonly Lazy<IDictionary<string, object>> _values;
-
-        [Inject] private IGetConfigurationValues Values { get; set; }
-
-        public Configured()
-        {
-            _values = new Lazy<IDictionary<string, object>>(() => Values.List);
-        }
-
-        static Configured()
-        {
-            Instance = () => { throw new InvalidOperationException("Oops! You need to load Configooness in your ninject kernel."); };
+            _values = values;
         }
 
         public string For(string key, string @default = null)
         {
-            return GetValue(key, @default).ToString();
+            return For<string>(key, @default);
         }
 
-        public TValue For<TValue>(string key, TValue @default = default(TValue))
-        {
-            return (TValue)GetValue(key, @default);
-        }
-
-        public object For<TClass>(Expression<Func<TClass, object>> propertyAccessor, object @default = null)
+        public TProperty For<TClass, TProperty>(Expression<Func<TClass, TProperty>> propertyAccessor, TProperty @default = default(TProperty))
         {
             var key = propertyAccessor.Name();
-            return GetValue(key, @default);
+            return For(key, @default);
+        }
+
+        public TValue For<TValue>(TValue @default = default(TValue)) where TValue : class
+        {
+            return typeof (TValue) == typeof (string)
+                       ? For(@default as string, default(TValue))
+                       : For(typeof (TValue).Name, @default);
+
         }
 
         public TValue For<TValue>(Func<string, bool> keySelector)
         {
-            var key = _values.Value.Keys.SingleOrDefault(keySelector);
-            return string.IsNullOrEmpty(key) ? default(TValue) : (TValue)GetValue(key);
+            var key = _values.Keys.SingleOrDefault(keySelector);
+            return string.IsNullOrEmpty(key) ? default(TValue) : For<TValue>(key);
         }
 
-        private object GetValue(string key, object @default = null)
+        public TValue For<TValue>(string key, TValue @default = default(TValue))
         {
-            var values = _values.Value;
-            
-            key = key.Trim().ToLower();
+            var thedefault = default(TValue);
+            if (!_values.Keys.Contains(key) && (@default == null || @default.Equals(thedefault))) 
+                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
 
-            if (!values.ContainsKey(key) && @default != null)
-                values.Add(key, @default);
-
-            return values[key];
+            return _values.Get(key, @default);
         }
     }
 }

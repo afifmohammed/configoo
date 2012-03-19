@@ -4,21 +4,22 @@ using System.Linq;
 
 namespace Configoo
 {
-    public interface IGetConfigurationValues
-    {
-        IDictionary<string, object> List { get; }
-    }
-
     public class GetConfigurationValues : IGetConfigurationValues
     {
-        public IDictionary<string, object> List
+        #region privates
+        private IDictionary<string, object> _valueDictionary;
+        protected virtual IDictionary<string, object> ValueDictionary
         {
             get
             {
-                var values = new Dictionary<string, object>();
-                AppSettings.ForEach(x => values.Add(x.Key.Trim().ToLower(), x.Value));
-                ConnectionStrings.ForEach(x => values.Add(x.Key, x.Value));
-                return values;
+                if (_valueDictionary != null) return _valueDictionary;
+                
+                _valueDictionary = new Dictionary<string, object>();
+                
+                AppSettings.ForEach(x => _valueDictionary.Add(x.Key, x.Value));
+                ConnectionStrings.ForEach(x => _valueDictionary.Add(x.Key, x.Value));
+                
+                return _valueDictionary;
             }
         }
 
@@ -42,6 +43,18 @@ namespace Configoo
                 return connectionStrings.Cast<ConnectionStringSettings>()
                     .ToDictionary<ConnectionStringSettings, string, object>(connectionString => connectionString.Name.Trim().ToLower(), connectionString => connectionString);
             }
+        }
+        #endregion
+
+        public IEnumerable<string> Keys { get { return ValueDictionary.Keys; } }
+
+        public TValue Get<TValue>(string key, TValue @default)
+        {
+            var lowered = key.Trim().ToLower();
+            if (!ValueDictionary.ContainsKey(lowered))
+                ValueDictionary.Add(lowered, @default);
+
+            return (TValue)ValueDictionary[lowered];
         }
     }
 }
