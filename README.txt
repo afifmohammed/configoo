@@ -31,9 +31,9 @@ If you wish to populate the properties on the above class and the rest of the ap
 	var app = new Application
 	{
 		Id = A<Configured>.Value
-					.For<Application, int>(x => x.Id),
+			.For<Application, int>(x => x.Id),
 		Language = A<Configured>.Value
-					.For<Application, string>(x => x.Language)
+			.For<Application, string>(x => x.Language)
 	}
 	
 	// stores in memory a key 'Application' with 
@@ -47,7 +47,7 @@ If you wish to populate the properties on the above class and the rest of the ap
 Finally to read a connection string
 
 	var northwind = A<Configured>.Value
-						.For<ConnectionStringSettings>("Northwind");
+				.For<ConnectionStringSettings>("Northwind");
 
 will retreive the connection string section named 'Northwind' from the app/web.config.
 
