@@ -11,7 +11,8 @@ will retreive the 'connectiontimeout' property from the app/web.config's appsett
 	// convert to an int
 	var timeout = A<Configured>.Value.For<int>("connectiontimeout");
 
-	// if key not exists provide a default to be used here after against the key value.
+	// if key not exists provide a default to be used 
+	// hereafter against the key value.
 	// notice didn't have to explicity cast it to an int.
 	// '@default' is just naming the parameter for better readability.
 	var timeout = A<Configured>.Value.For("connectiontimeout", @default: 10);
@@ -29,11 +30,14 @@ If you wish to populate the properties on the above class and the rest of the ap
 	
 	var app = new Application
 	{
-		Id = A<Configured>.Value.For<Application, int>(x => x.Id),
-		Language = A<Configured>.Value.For<Application, string>(x => x.Language),
+		Id = A<Configured>.Value
+					.For<Application, int>(x => x.Id),
+		Language = A<Configured>.Value
+					.For<Application, string>(x => x.Language)
 	}
 	
-	// stores in memory a key 'Application' with a reference to the app variable as the value.
+	// stores in memory a key 'Application' with 
+	// a reference to the app variable as the value.
 	// if a key by that name already exists it will NOT be over written.
 	A<Configured>.Value.For<Application>(app);
 	
@@ -42,7 +46,8 @@ If you wish to populate the properties on the above class and the rest of the ap
 	
 Finally to read a connection string
 
-	var northwind = A<Configured>.Value.For<ConnectionStringSettings>("Northwind");
+	var northwind = A<Configured>.Value
+						.For<ConnectionStringSettings>("Northwind");
 
 will retreive the connection string section named 'Northwind' from the app/web.config.
 
@@ -63,7 +68,8 @@ This can be acheived as follows.
 		
 		private class GetSessionStateValues : IGetConfigurationValues
 		{
-			// implementation to read and write values from the SessionState
+			// implementation to read and 
+			// write values from the SessionState
 		}
 	}
 	
