@@ -8,6 +8,12 @@ namespace Configoo
     {
         public static bool TryParse<T>(this string s, out T value)
         {
+            if (string.IsNullOrEmpty(s))
+            {
+                value = default(T);
+                return false;
+            }
+
             var converter = TypeDescriptor.GetConverter(typeof(T));
             value = (T)converter.ConvertFromString(s);
             return true;
