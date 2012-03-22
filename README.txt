@@ -52,7 +52,7 @@ Finally to read a connection string
 will retreive the connection string section named 'Northwind' from the app/web.config.
 
 	
-The Configured class uses IGetConfigurationValues interface internally to retreive values into an IDictionary<string, object> when the the first value is requested.
+The Configured class uses ILookupValues interface internally to retreive values into an IDictionary<string, object> when the the first value is requested.
 
 The implementation of the above interface that is injected into the Configured class by Ninject is one that goes to the app/web.config to read all connection string and appsetting values.
 	
@@ -66,7 +66,7 @@ This can be acheived as follows.
 	{
 		protected UserSession() : base(new GetSessionStateValues()) {}
 		
-		private class GetSessionStateValues : IGetConfigurationValues
+		private class GetSessionStateValues : ILookupValues
 		{
 			// implementation to read and 
 			// write values from the SessionState
