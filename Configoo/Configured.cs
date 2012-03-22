@@ -22,13 +22,13 @@ namespace Configoo
 
     public class Configured
     {
-        private readonly IGetConfigurationValues _values;
+        protected readonly ILookupValues Values;
 
         private Configured() {}
 
-        protected Configured(IGetConfigurationValues values)
+        protected Configured(ILookupValues values)
         {
-            _values = values;
+            Values = values;
         }
 
         public string For(string key, string @default = null)
@@ -52,17 +52,17 @@ namespace Configoo
 
         public TValue For<TValue>(Func<string, bool> keySelector)
         {
-            var key = _values.Keys.SingleOrDefault(keySelector);
-            return string.IsNullOrEmpty(key) ? default(TValue) : For<TValue>(key);
+            var key = Values.Keys.SingleOrDefault(keySelector);
+            
+            if(string.IsNullOrEmpty(key)) 
+                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured}", key));
+            
+            return For<TValue>(key);
         }
 
         public TValue For<TValue>(string key, TValue @default = default(TValue))
         {
-            var thedefault = default(TValue);
-            if (!_values.Keys.Any(k => k.Equals(key, StringComparison.OrdinalIgnoreCase)) && (@default == null || @default.Equals(thedefault))) 
-                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
-
-            return _values.Get(key, @default);
+            return Values.Get(key, @default);
         }
     }
 }

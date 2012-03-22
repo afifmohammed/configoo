@@ -25,9 +25,9 @@ namespace Configoo
                             {
                                 var path = AppDomain.CurrentDomain.ExecutingAssmeblyPath();
                                 scanner.FromAssembliesInPath(path); 
-                                scanner.WhereTypeInheritsFrom<IGetConfigurationValues>();
+                                scanner.WhereTypeInheritsFrom<ILookupValues>();
                                 scanner.Where(t => !t.IsAbstract && !t.IsInterface && t.IsClass);
-                                scanner.BindWith<OverridableBindingGenerator<IGetConfigurationValues>>();
+                                scanner.BindWith<OverridableBindingGenerator<ILookupValues>>();
                                 scanner.InSingletonScope();
                                 _customActions.ForEach(a => a(scanner));
                             });

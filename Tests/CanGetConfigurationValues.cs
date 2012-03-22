@@ -6,61 +6,56 @@ using Ninject;
 
 namespace Tests
 {
-    public class TestConfigurationValues : IGetConfigurationValues
+    public class AppConfig : Configured
     {
-        private readonly IDictionary<string, object> _values;
-        public TestConfigurationValues()
+        protected AppConfig(ILookupValues lookupValues) : base(lookupValues)
         {
-            _values = new Dictionary<string, object> {{"state", "VIC"}};
+            lookupValues.Get("howlongisapieceofstring", "9876543210.9876543210");
+            lookupValues.Get("dob", "1995-10-10");
         }
-        public IEnumerable<string> Keys
-        {
-            get { return _values.Keys; }
-        }
-
-        public TValue Get<TValue>(string key, TValue @default)
-        {
-            var lowered = key.Trim().ToLower();
-            if(!_values.ContainsKey(lowered))
-                _values.Add(lowered, @default);
-
-            return (TValue)_values[lowered];
-        }
-    }
-    
-    public class TestConfigured : Configured
-    {
-        private TestConfigured() : base(new TestConfigurationValues())
-        {}
     }
 
     [TestFixture]
     public class CanGetConfigurationValues
     {
         [Test]
-        public void WhenCustomConfigurationIsLoaded()
+        public void WhenDecimalIsRequestedFromAppConfig()
         {
-            string state;
+            decimal answer;
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                state = A<TestConfigured>.Value.For("state");
+                answer = A<AppConfig>.Value.For<decimal>("howlongisapieceofstring");
             }
 
-            Assert.AreEqual("VIC", state);
+            Assert.AreEqual(9876543210.9876543210, answer);
         }
 
         [Test]
-        public void WhenCustomConfigurationValuesAreLoaded()
+        public void WhenMissingKeyWithDefaultValueIsRequestedFromAppConfig()
         {
-            string state;
+            int age;
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                state = A<Configured>.Value.For("state");
+                A<AppConfig>.Value.For("age", 23);
+                age = A<AppConfig>.Value.For<int>("age");
             }
 
-            Assert.AreEqual("VIC", state);
+            Assert.AreEqual(23, age);
+        }
+
+        [Test]
+        public void WhenDateIsRequestedFromAppConfig()
+        {
+            DateTime dob;
+            using (var k = new StandardKernel())
+            {
+                k.Load<Configooness>();
+                dob = A<AppConfig>.Value.For<DateTime>("dob");
+            }
+
+            Assert.AreEqual(new DateTime(1995, 10, 10), dob);
         }
 
         [Test]
@@ -69,7 +64,7 @@ namespace Tests
             string name;
             using(var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 name = A<Configured>.Value.For("name", @default: "jack");
             }
 
@@ -82,7 +77,7 @@ namespace Tests
             int age;
             using (var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 age = A<Configured>.Value.For("Age", @default: 31);
             }
             
@@ -95,7 +90,7 @@ namespace Tests
             int age;
             using (var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 age = A<Configured>.Value.For<Person, int>(x => x.Age, @default: 22);
             }
 
@@ -109,7 +104,7 @@ namespace Tests
             var @default = new Person {Age = 25};
             using (var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 person = A<Configured>.Value.For("John", @default);
             }
 
@@ -122,7 +117,7 @@ namespace Tests
             int weight;
             using (var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 A<Configured>.Value.For("weight", @default: 49);
 
                 weight = A<Configured>.Value.For<int>(x => x == "weight");
@@ -137,7 +132,7 @@ namespace Tests
         {
             using(var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 Assert.Throws<KeyNotFoundException>(() => A<Configured>.Value.For("name"));
             }
         }
@@ -155,7 +150,7 @@ namespace Tests
             var john = new Person { Age = 25 };
             using (var k = new StandardKernel())
             {
-                k.Load(new Configooness(s => s.Excluding<TestConfigurationValues>()));
+                k.Load(new Configooness());
                 A<Configured>.Value.For(john);
                 person = A<Configured>.Value.For<Person>();
             }

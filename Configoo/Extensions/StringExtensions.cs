@@ -1,20 +1,24 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 
 namespace Configoo
 {
     internal static class StringExtensions
     {
-        /// <summary>
-        /// </summary>
+        public static bool TryParse<T>(this string s, out T value)
+        {
+            var converter = TypeDescriptor.GetConverter(typeof(T));
+            value = (T)converter.ConvertFromString(s);
+            return true;
+        }
+
         public static string Name<T>(this Expression<Func<T, object>> expression)
         {
             Expression body = expression.Body;
             return GetMemberName(body);
         }
 
-        /// <summary>
-        /// </summary>
         public static string Name<T, TReturn>(this Expression<Func<T, TReturn>> expression)
         {
             Expression body = expression.Body;

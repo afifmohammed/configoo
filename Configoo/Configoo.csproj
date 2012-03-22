@@ -48,8 +48,8 @@
     <Compile Include="Configooness.cs" />
     <Compile Include="Configured.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="GetConfigurationValues.cs" />
-    <Compile Include="IGetConfigurationValues.cs" />
+    <Compile Include="LookupValues.cs" />
+    <Compile Include="ILookupValues.cs" />
     <Compile Include="OverridableBindingGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
