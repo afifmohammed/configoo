@@ -26,7 +26,7 @@ namespace Configoo
 
         private Configured() {}
 
-        protected Configured(ILookupValues values)
+        internal protected Configured(ILookupValues values)
         {
             Values = values;
         }

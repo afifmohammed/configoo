@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
@@ -21,6 +22,12 @@ namespace Configoo
         {
             Resolver.Get = t => Kernel.Get(t);
 
+            Bind<IDictionary<string, object>>().ToMethod(c =>
+                                                       {
+                                                           var d = new Dictionary<string, object>();
+                                                           d.PopulateConfigurationValues();
+                                                           return d;
+                                                       }).WhenInjectedInto<LookupValues>().InSingletonScope();
             Kernel.Scan(scanner =>
                             {
                                 var path = AppDomain.CurrentDomain.ExecutingAssmeblyPath();

@@ -1,63 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Configoo
 {
-
     public class LookupValues : ILookupValues
     {
-        #region privates
-        private IDictionary<string, object> _valueDictionary;
-        protected virtual IDictionary<string, object> ValueDictionary
+        private readonly IDictionary<string, object> _valueDictionary;
+
+        public LookupValues() : this(new Dictionary<string, object>())
+        {}
+
+        public LookupValues(IDictionary<string, object> valueDictionary)
         {
-            get
-            {
-                if (_valueDictionary != null) return _valueDictionary;
-
-                _valueDictionary = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-                
-                AppSettings.ForEach(x => _valueDictionary.Add(x.Key, x.Value));
-                ConnectionStrings.ForEach(x => _valueDictionary.Add(x.Key, x.Value));
-                
-                return _valueDictionary;
-            }
+            _valueDictionary = valueDictionary;
         }
+        
+        public IEnumerable<string> Keys { get { return _valueDictionary.Keys; } }
 
-        private static IEnumerable<KeyValuePair<string, object>> AppSettings
+        protected virtual bool IsNotNull<TValue>(TValue value)
         {
-            get
-            {
-                var collection = ConfigurationManager.AppSettings;
-                return collection.Cast<string>().Select(x => new KeyValuePair<string, object>(x, collection[x]));
-            }
+            return !ReferenceEquals(value, null) && !value.Equals(default(TValue));
         }
-
-        private static IEnumerable<KeyValuePair<string, object>> ConnectionStrings
-        {
-            get
-            {
-                var connectionStrings = ConfigurationManager.ConnectionStrings ?? new ConnectionStringSettingsCollection();
-
-                return connectionStrings.Cast<ConnectionStringSettings>().ToDictionary<ConnectionStringSettings, string, object>(
-                            keySelector: connectionString => connectionString.Name.Trim(), 
-                            elementSelector: connectionString => connectionString);
-            }
-        }
-        #endregion
-
-        public IEnumerable<string> Keys { get { return ValueDictionary.Keys; } }
 
         public TValue Get<TValue>(string key, TValue @default)
         {
             key = key.Trim();
             object value;
 
-            if(!ValueDictionary.TryGetValue(key, out value))
+            if (!_valueDictionary.TryGetValue(key, out value))
             {
-                if (!ReferenceEquals(@default, null) && !@default.Equals(default(TValue)))
-                    ValueDictionary.Add(key, @default);
+                if (IsNotNull(@default))
+                    _valueDictionary.Add(key, @default);
 
                 value = @default;
             }

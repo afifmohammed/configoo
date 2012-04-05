@@ -47,7 +47,9 @@
     <Compile Include="Extensions\AppDomainExtensions.cs" />
     <Compile Include="Configooness.cs" />
     <Compile Include="Configured.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\LookupValuesExtensions.cs" />
     <Compile Include="LookupValues.cs" />
     <Compile Include="ILookupValues.cs" />
     <Compile Include="OverridableBindingGenerator.cs" />
