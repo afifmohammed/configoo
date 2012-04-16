@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Configoo
 {
-    public class LookupValues : ILookupValues
+    public abstract class HaveLookupValues : IHaveLookupValues
     {
         private readonly IDictionary<string, object> _valueDictionary;
 
-        public LookupValues() : this(new Dictionary<string, object>())
-        {}
+        protected HaveLookupValues()
+            : this(new Dictionary<string, object>())
+        { }
 
-        public LookupValues(IDictionary<string, object> valueDictionary)
+        protected HaveLookupValues(IDictionary<string, object> valueDictionary)
         {
             _valueDictionary = valueDictionary;
         }
-        
+
         public IEnumerable<string> Keys { get { return _valueDictionary.Keys; } }
 
         protected virtual bool IsNotNull<TValue>(TValue value)
@@ -21,7 +22,7 @@ namespace Configoo
             return !ReferenceEquals(value, null) && !value.Equals(default(TValue));
         }
 
-        public TValue Get<TValue>(string key, TValue @default)
+        public virtual TValue Get<TValue>(string key, TValue @default)
         {
             key = key.Trim();
             object value;
@@ -34,7 +35,7 @@ namespace Configoo
                 value = @default;
             }
 
-            if (value == null) 
+            if (value == null)
                 throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
 
             if (value is string && typeof(TValue) != typeof(string))

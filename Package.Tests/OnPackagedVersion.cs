@@ -4,7 +4,7 @@ using Tests;
 namespace Package.Tests
 {
     [TestFixture]
-    public class OnPackagedVersion : CanGetConfigurationValues
+    public class OnPackagedVersion : CanGetConfiguredValue
     {
     }
 }

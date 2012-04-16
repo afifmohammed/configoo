@@ -2,17 +2,10 @@ using System.Collections.Generic;
 
 namespace Configoo
 {
-    public class AppConfig : LookupValues
+    public sealed class AppConfig : HaveLookupValues
     {
-        private static IDictionary<string, object> Values
-        {
-            get { var d = new Dictionary<string, object>();
-                d.PopulateConfigurationValues();
-                return d;
-            }
-        }
-
-        public AppConfig() : base(Values)
-        {}
+        public AppConfig()
+            : base(new Dictionary<string, object>().AppSettingsAndConnStrings())
+        { }
     }
 }

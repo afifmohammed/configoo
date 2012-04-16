@@ -6,9 +6,9 @@ using Ninject;
 
 namespace Tests
 {
-    public class AppConfig : Configured
+    public class TestAppConfig : Configured
     {
-        protected AppConfig(ILookupValues lookupValues) : base(lookupValues)
+        protected TestAppConfig(LookupValues lookupValues) : base(lookupValues)
         {
             lookupValues.Get("howlongisapieceofstring", "9876543210.9876543210");
             lookupValues.Get("dob", "1995-10-10");
@@ -25,7 +25,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                answer = A<AppConfig>.Value.For<decimal>("howlongisapieceofstring");
+                answer = A<TestAppConfig>.Value.For<decimal>("howlongisapieceofstring");
             }
 
             Assert.AreEqual(9876543210.9876543210, answer);
@@ -38,8 +38,8 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                A<AppConfig>.Value.For("age", 23);
-                age = A<AppConfig>.Value.For<int>("age");
+                A<TestAppConfig>.Value.For("age", 23);
+                age = A<TestAppConfig>.Value.For<int>("age");
             }
 
             Assert.AreEqual(23, age);
@@ -52,7 +52,7 @@ namespace Tests
             using (var k = new StandardKernel())
             {
                 k.Load<Configooness>();
-                dob = A<AppConfig>.Value.For<DateTime>("dob");
+                dob = A<TestAppConfig>.Value.For<DateTime>("dob");
             }
 
             Assert.AreEqual(new DateTime(1995, 10, 10), dob);

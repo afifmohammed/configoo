@@ -5,18 +5,19 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
-    public class CanGetConfigurationValuesWithNoIoc
+    public class CanGetConfiguredValue
     {
         [Test]
         public void WhenDecimalIsRequestedFromAppConfig()
         {
-            var values = new Dictionary<string, object>
+            var values = new Dictionary<string, string>
                              {
                                  { "howlongisapieceofstring", "9876543210.9876543210" }, 
                                  { "dob", "1995-10-10" }
                              };
-
-            var lookup = new LookupValues(values);
+            var lookup = new AppConfig();
+            foreach(var value in values)
+                lookup.Get(value.Key, value.Value);
 
             Assert.That(lookup.Value().For<decimal>("howlongisapieceofstring"), Is.EqualTo(9876543210.9876543210));
         }
@@ -24,7 +25,7 @@ namespace Tests
         [Test]
         public void WhenMissingKeyWithDefaultValueIsRequestedFromLookup()
         {
-            var lookup = new LookupValues();
+            var lookup = new AppConfig();
             
             lookup.Value().For("age", 23);
 
@@ -34,7 +35,7 @@ namespace Tests
         [Test]
         public void ShouldThrowWhenKeyMissingWithNoDefault()
         {
-            Assert.Throws<KeyNotFoundException>(() => new LookupValues().Value().For("name"));
+            Assert.Throws<KeyNotFoundException>(() => new AppConfig().Value().For("name"));
         }
 
         [Test]
@@ -42,7 +43,7 @@ namespace Tests
         {
             var @default = new Person { Age = 25 };
 
-            var person = new LookupValues().Value().For("jon", @default);
+            var person = new AppConfig().Value().For("jon", @default);
             
             Assert.That(person.Age, Is.EqualTo(@default.Age));
         }
