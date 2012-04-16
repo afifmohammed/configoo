@@ -10,15 +10,11 @@ namespace Tests
         [Test]
         public void WhenDecimalIsRequestedFromAppConfig()
         {
-            var values = new Dictionary<string, string>
-                             {
-                                 { "howlongisapieceofstring", "9876543210.9876543210" }, 
-                                 { "dob", "1995-10-10" }
-                             };
             var lookup = new AppConfig();
-            foreach(var value in values)
-                lookup.Get(value.Key, value.Value);
-
+            
+            lookup.Get("howlongisapieceofstring", "9876543210.9876543210");
+            lookup.Get("dob", "1995-10-10");
+            
             Assert.That(lookup.Value().For<decimal>("howlongisapieceofstring"), Is.EqualTo(9876543210.9876543210));
         }
 
