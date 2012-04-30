@@ -1,10 +1,13 @@
-﻿namespace Configoo
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
+namespace Configoo
+{
+    /// <summary>
+    /// helper class that provides strongly typed key resolution on top of the <see cref="IHaveLookupValues"/> interface
+    /// </summary>
     public sealed class Configured
     {
         readonly IHaveLookupValues _values;
@@ -16,6 +19,12 @@
             _values = values;
         }
 
+        /// <summary>
+        /// Retreives the value as a <see cref="string"/> for the provided <param name="key"/>
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="default"></param>
+        /// <returns></returns>
         public string For(string key, string @default = null)
         {
             return For<string>(key, @default);
