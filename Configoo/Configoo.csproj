@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Configoo.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,7 +42,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="Configured.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="HaveLookupValues.cs" />
+    <Compile Include="HasLookupValues.cs" />
     <Compile Include="IHaveLookupValues.cs" />
     <Compile Include="LookupValuesExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

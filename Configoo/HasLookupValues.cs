@@ -1,21 +1,22 @@
+using System;
 using System.Collections.Generic;
 
 namespace Configoo
 {
-    public abstract class HaveLookupValues : IHaveLookupValues
+    public abstract class HasLookupValues : IHaveLookupValues
     {
-        private readonly IDictionary<string, object> _valueDictionary;
+        private readonly Lazy<IDictionary<string, object>> _valueDictionary;
 
-        protected HaveLookupValues()
-            : this(new Dictionary<string, object>())
+        protected HasLookupValues()
+            : this(new Lazy<IDictionary<string, object>>(() => new Dictionary<string, object>()))
         { }
 
-        protected HaveLookupValues(IDictionary<string, object> valueDictionary)
+        protected HasLookupValues(Lazy<IDictionary<string, object>> valueDictionary)
         {
             _valueDictionary = valueDictionary;
         }
 
-        public IEnumerable<string> Keys { get { return _valueDictionary.Keys; } }
+        public IEnumerable<string> Keys { get { return _valueDictionary.Value.Keys; } }
 
         protected virtual bool IsNotNull<TValue>(TValue value)
         {
@@ -27,10 +28,10 @@ namespace Configoo
             key = key.Trim();
             object value;
 
-            if (!_valueDictionary.TryGetValue(key, out value))
+            if (!_valueDictionary.Value.TryGetValue(key, out value))
             {
                 if (IsNotNull(@default))
-                    _valueDictionary.Add(key, @default);
+                    _valueDictionary.Value.Add(key, @default);
 
                 value = @default;
             }
