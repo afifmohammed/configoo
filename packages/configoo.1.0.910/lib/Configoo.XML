@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Configoo</name>
+    </assembly>
+    <members>
+        <member name="T:Configoo.AppConfig">
+            <summary>
+            helper class to retreive appconfig key value pairs and connection strings from app.config or web.config
+            </summary>
+        </member>
+        <member name="M:Configoo.AppConfig.#ctor">
+            <summary>
+            on construction will get injected a lazy dictionary that is populated with appconfig key value pairs
+            and connection strings.
+            </summary>
+            <remarks>should be used as a singleton</remarks>
+        </member>
+        <member name="M:Configoo.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            enumerates each item on the <paramref name="items"/> collection and will apply the <paramref name="action"/> on it.
+            </summary>
+        </member>
+        <member name="T:Configoo.Configured">
+            <summary>
+            helper class that provides strongly typed key resolution on top of the <see cref="T:Configoo.IHaveLookupValues"/> interface
+            </summary>
+        </member>
+        <member name="M:Configoo.Configured.For(System.String,System.String)">
+            <summary>
+            Retreives the value as a <see cref="T:System.String"/> for the provided <param name="key"/>
+            </summary>
+            <param name="key"></param>
+            <param name="default"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
