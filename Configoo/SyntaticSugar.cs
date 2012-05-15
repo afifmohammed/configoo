@@ -5,16 +5,32 @@ using System.Linq.Expressions;
 
 namespace Configoo
 {
+    public interface IConfigurationSugar
+    {
+        /// <summary>
+        /// Retreives the value as a <see cref="string"/> for the provided <param name="key"/>
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="default"></param>
+        /// <returns></returns>
+        string For(string key, string @default = null);
+
+        TProperty For<TClass, TProperty>(Expression<Func<TClass, TProperty>> propertyAccessor, TProperty @default = default(TProperty));
+        TValue For<TValue>(TValue @default = default(TValue)) where TValue : class;
+        TValue For<TValue>(Func<string, bool> keySelector);
+        TValue For<TValue>(string key, TValue @default = default(TValue));
+    }
+
     /// <summary>
     /// helper class that provides strongly typed key resolution on top of the <see cref="IHaveLookupValues"/> interface
     /// </summary>
-    public sealed class Configured
+    internal sealed class SyntaticSugar : IConfigurationSugar
     {
         readonly IHaveLookupValues _values;
 
-        private Configured() { }
+        private SyntaticSugar() { }
 
-        internal Configured(IHaveLookupValues values)
+        internal SyntaticSugar(IHaveLookupValues values)
         {
             _values = values;
         }
@@ -49,7 +65,7 @@ namespace Configoo
             var key = _values.Keys.SingleOrDefault(keySelector);
 
             if (string.IsNullOrEmpty(key))
-                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
+                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be SyntaticSugar", key));
 
             return For<TValue>(key);
         }

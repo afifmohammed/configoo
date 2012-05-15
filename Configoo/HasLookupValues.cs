@@ -37,7 +37,7 @@ namespace Configoo
             }
 
             if (value == null)
-                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be Configured", key));
+                throw new KeyNotFoundException(string.Format("the key '{0}' was not found to be SyntaticSugar", key));
 
             if (value is string && typeof(TValue) != typeof(string))
             {

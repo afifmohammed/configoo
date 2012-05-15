@@ -40,11 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="Configured.cs" />
+    <Compile Include="SyntaticSugar.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HasLookupValues.cs" />
     <Compile Include="IHaveLookupValues.cs" />
-    <Compile Include="LookupValuesExtensions.cs" />
+    <Compile Include="LookupValuesSyntaticSugar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
